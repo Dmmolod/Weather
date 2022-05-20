@@ -194,14 +194,13 @@
 		D927CC5F27D343A200E25DF5 /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				D942A1EC2837C3AE001590E8 /* TableCellAnimation */,
 				D906B9CF27F321AE000E688F /* Constants.swift */,
 				D927CC6427D3440000E25DF5 /* AnchorExtension.swift */,
 				D9DB446B27F5B74F00DFB545 /* StringExtension.swift */,
 				D9DB446D27F5B76700DFB545 /* DateExtension.swift */,
 				D97A019C27F6CAA900F718CD /* Bindable.swift */,
 				D9C466A82808506900A33A38 /* BlureEffectExtansion.swift */,
-				D99CE61628216654000569E8 /* TableCellAnimation.swift */,
-				D9CDD3262825323E00293352 /* AnimatableTransitionTableCell.swift */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -216,6 +215,15 @@
 				D9A30E4F27DB90DB001903E1 /* MoreInfoCollectionCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		D942A1EC2837C3AE001590E8 /* TableCellAnimation */ = {
+			isa = PBXGroup;
+			children = (
+				D99CE61628216654000569E8 /* TableCellAnimation.swift */,
+				D9CDD3262825323E00293352 /* AnimatableTransitionTableCell.swift */,
+			);
+			path = TableCellAnimation;
 			sourceTree = "<group>";
 		};
 		D94CF7DD27D93B4E008304E8 /* Model */ = {

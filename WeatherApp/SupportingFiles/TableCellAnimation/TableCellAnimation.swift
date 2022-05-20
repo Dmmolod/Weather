@@ -21,7 +21,8 @@ class AnimationIntoCell: NSObject, UIViewControllerAnimatedTransitioning {
         
         guard let fromVC = transitionContext.view(forKey: UITransitionContextViewKey.from),
               let animatedCell = toVC.getAnimateCell(from: animateCellIndexPath) else {
-            transitionContext.completeTransition(false)
+            transitionContext.containerView.addSubview(toVC.view)
+            transitionContext.completeTransition(true)
             return
         }
         
@@ -80,7 +81,14 @@ class AnimationFromCell: NSObject, UIViewControllerAnimatedTransitioning {
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let toVC = transitionContext.view(forKey: UITransitionContextViewKey.to),
-              let animatedCell = fromVC.getAnimateCell(from: animateCellIndexPath) else { return }
+              let animatedCell = fromVC.getAnimateCell(from: animateCellIndexPath) else {
+            if let toVC = transitionContext.view(forKey: UITransitionContextViewKey.to) {
+                transitionContext.containerView.addSubview(toVC)
+                transitionContext.completeTransition(true)
+            }
+            transitionContext.completeTransition(false)
+            return
+        }
         let cellSuperview = fromVC.getTable()
         
         let offset = cellSuperview.contentOffset

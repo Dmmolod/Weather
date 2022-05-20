@@ -24,7 +24,7 @@ class MainCoordinator: NSObject, Coordinator {
             let weatherVC = WeatherViewController()
             weatherVC.coordinator = self
             weatherVC.viewModel = WeatherViewModel(currentLocationForecast)
-            navController?.pushViewController(weatherVC, animated: false)
+            navController?.pushViewController(weatherVC, animated: true)
         }
         
     }
@@ -62,8 +62,8 @@ class MainCoordinator: NSObject, Coordinator {
     
     private func setNavControllerToWindow(with rootVC: UIViewController) {
         navController = UINavigationController(rootViewController: rootVC)
-        navController?.navigationBar.isHidden = true
         navController?.delegate = self
+        navController?.navigationBar.isHidden = true
         
         window?.rootViewController = navController
         window?.makeKeyAndVisible()
@@ -72,11 +72,15 @@ class MainCoordinator: NSObject, Coordinator {
 
 extension MainCoordinator: UINavigationControllerDelegate {
     
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        print()
+    }
+    
     func navigationController(_ navigationController: UINavigationController,
                               animationControllerFor operation: UINavigationController.Operation,
                               from fromVC: UIViewController,
                               to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        
+                
         if let toVC = toVC as? AnimatableTransitionFromTableCell,
            let fromVC = fromVC as? AnimatableTransitionIntoTableCell,
            let indexPath = fromVC.getIndexPath() {
