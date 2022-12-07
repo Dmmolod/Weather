@@ -2,6 +2,8 @@ import Foundation
 import UIKit
 
 protocol Coordinator {
-    var window: UIWindow? { get }
-    var navController: UINavigationController? { get set }
+    var childCoordinators: [Coordinator] { get set }
+    var rootViewController: UIViewController? { get set }
+    var navigationController: UINavigationController? { get set }
+    func start()
 }
