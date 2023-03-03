@@ -1,0 +1,21 @@
+// MARK: for network request
+"en" = "ru";
+//
+"Hourly forecast" = "Почасовой прогноз";
+"Today" = "Сегодня";
+"Daily forecast for 7 days" = "Прогноз на 7 дней";
+"Now" = "Сейчас";
+"Weather" = "Погода";
+"City name" = "Название города";
+"Cancel" = "Отмена";
+"Add" = "Добавить";
+"Current" = "Текущее место";
+"min" = "мин";
+"max" = "макс";
+"More info" = "Еще информация";
+"humidity" = "влажность";
+"wind" = "ветер";
+"feels like" = "ощущается как";
+"pressure" = "давление";
+"mmHg" = "мм рт.ст.";
+"m/s" = "м/с";
