@@ -30,13 +30,13 @@ protocol SearchFieldViewModelProtocol {
 class FavoritesViewModel: FavoritesViewModelType {
     private let updateGroup = DispatchGroup()
     
-    private let favoritesManager: FavoritesManagerProtocol
+    private let favoritesService: FavoritesServiceProtocol
     private let updateChecker: FavoritesListUpdateChecker
     private let oneCallApiClient: OneCallApiClientProtocol
     
     let needUpdateTable = Bindable<Void>(())
     let resultTableModel = Bindable<ResultTableViewModel>(.favorites(items: []))
-    let weatherIconManager: WeatherIconManager
+    let iconService: WeatherIconService
     
     let selectedCityCoordinate = Bindable<CityInfo?>(nil)
     let selectedFavoriteCity = Bindable<Forecast?>(nil)
@@ -58,30 +58,30 @@ class FavoritesViewModel: FavoritesViewModelType {
             .make(
                 $1,
                 isCurrentLocationCity: $0 == 0 && currentLocationForecast != nil,
-                iconManager: weatherIconManager
+                iconService: iconService
             )
         }
     }
     
     init(
         currentLocationForecast: Forecast? = nil,
-        favoritesManager: FavoritesManagerProtocol,
-        weatherIconManager: WeatherIconManager,
+        favoritesService: FavoritesServiceProtocol,
+        iconService: WeatherIconService,
         oneCallApiClient: OneCallApiClientProtocol,
         updateChecker: FavoritesListUpdateChecker = FavoritesListUpdateChecker()
     ) {
         self.currentLocationForecast = currentLocationForecast
-        self.favoritesManager = favoritesManager
-        self.weatherIconManager = weatherIconManager
+        self.favoritesService = favoritesService
+        self.iconService = iconService
         self.updateChecker = updateChecker
         self.oneCallApiClient = oneCallApiClient
-        self.cities = CitiesParseManager.shared.allCities
+        self.cities = CitiesParseService.shared.allCities
         
         updateChecker.needUpdateCallBack = { [weak self] in
             self?.updateForecastList()
         }
         
-        favoritesManager.forecastDidSaveCallBack = { [weak self] savedForecast in
+        favoritesService.forecastDidSaveCallBack = { [weak self] savedForecast in
             self?.didAddToFavorites(savedForecast)
         }
         
@@ -103,7 +103,7 @@ class FavoritesViewModel: FavoritesViewModelType {
             forecastsList.append(currentForecast)
         }
         
-        let localFavorites = favoritesManager.getFavoritesForecasts()
+        let localFavorites = favoritesService.getFavoritesForecasts()
         forecastsList.append(contentsOf: localFavorites)
         
         resultTableModel.value = .favorites(
@@ -111,7 +111,7 @@ class FavoritesViewModel: FavoritesViewModelType {
                 .make(
                     $1,
                     isCurrentLocationCity: $0 == 0 && currentLocationForecast != nil,
-                    iconManager: weatherIconManager
+                    iconService: iconService
                 )
             }
         )
@@ -257,7 +257,7 @@ extension FavoritesViewModel: ResultTableViewModelProtocol {
         guard resultTableModel.value.info.editingStyle == .delete else { return }
         
         let removedForecast = forecastsList.remove(at: indexPath.section)
-        favoritesManager.remove(forecast: removedForecast)
+        favoritesService.remove(forecast: removedForecast)
         
         resultTableModel.value = .favorites(items: forecastCellViewModels)
         

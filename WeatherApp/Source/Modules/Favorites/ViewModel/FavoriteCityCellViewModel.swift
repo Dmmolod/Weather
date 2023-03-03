@@ -13,7 +13,7 @@ struct FavoriteCellViewModel {
     
     private let iconID: String
     private let isCurrentLocationCity: Bool
-    private let iconManager: WeatherIconManager
+    private let iconService: WeatherIconService
     
     init(
         headerTitle: String,
@@ -24,7 +24,7 @@ struct FavoriteCellViewModel {
         gradientColors: [CGColor],
         iconID: String,
         isCurrentLocationCity: Bool,
-        iconManager: WeatherIconManager
+        iconService: WeatherIconService
     ) {
         self.headerTitle = headerTitle
         self.subtitle = subtitle
@@ -34,13 +34,13 @@ struct FavoriteCellViewModel {
         self.gradientColors = gradientColors
         self.iconID = iconID
         self.isCurrentLocationCity = isCurrentLocationCity
-        self.iconManager = iconManager
+        self.iconService = iconService
         
         getImage()
     }
     
      private func getImage() {
-         iconManager.getIcon(for: iconID) { [weak icon] forecastIcon, iconID in
+         iconService.getIcon(for: iconID) { [weak icon] forecastIcon, iconID in
              guard self.iconID == iconID else { return }
              icon?.value = forecastIcon
          }
@@ -51,7 +51,7 @@ extension FavoriteCellViewModel {
     static func make(
         _ forecast: Forecast,
         isCurrentLocationCity: Bool,
-        iconManager: WeatherIconManager
+        iconService: WeatherIconService
     ) -> FavoriteCellViewModel {
         let headerTitle = isCurrentLocationCity ? "Current".localized : forecast.cityName
         let subtitle = isCurrentLocationCity ? forecast.cityName : forecast.current.date.format("HH:mm")
@@ -85,7 +85,7 @@ extension FavoriteCellViewModel {
             gradientColors: gradientColors,
             iconID: forecast.current.iconID,
             isCurrentLocationCity: isCurrentLocationCity,
-            iconManager: iconManager
+            iconService: iconService
         )
     }
 }

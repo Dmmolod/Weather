@@ -10,13 +10,13 @@ import UIKit
 struct FavoritesScreenFactory {
     static func makeFavoriteScreen(
         coordinator: FavoritesScreenCoordinatorLogic,
-        favoritesManager: FavoritesManagerProtocol,
+        favoritesService: FavoritesServiceProtocol,
         currentLocationForecast: Forecast? = nil
     ) -> UIViewController {
         let viewModel = FavoritesViewModel(
             currentLocationForecast: currentLocationForecast,
-            favoritesManager: favoritesManager,
-            weatherIconManager: WeatherIconManager(),
+            favoritesService: favoritesService,
+            iconService: WeatherIconService(),
             oneCallApiClient: OneCallApiClient()
         )
         

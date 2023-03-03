@@ -33,7 +33,7 @@ extension AppCoordinator: LoadScreenCoordinatorLogic {
     func didFinishFetchForecast(_ forecast: Forecast?) {
         let favoritesCoordinator = FavoritesScreenCoordinator(
             currentForecast: forecast,
-            favoritesManager: FavoritesManager()
+            favoritesService: FavoritesService()
         )
         
         favoritesCoordinator.start()

@@ -14,14 +14,14 @@ struct DailyTableCellViewModel: DailyTableCellViewModelType {
     private(set) var tempMin: String
     private(set) var tempMax: String
     
-    private let weatherIconManager: WeatherIconManager
+    private let weatherIconService: WeatherIconService
     
     init(
         _ dayForecast: DayForecast,
         isCurrentDay: Bool,
-        iconManager: WeatherIconManager
+        iconService: WeatherIconService
     ) {
-        self.weatherIconManager = iconManager
+        self.weatherIconService = iconService
         
         self.day = isCurrentDay
         ? "Today".localized
@@ -34,7 +34,7 @@ struct DailyTableCellViewModel: DailyTableCellViewModelType {
     }
 
     private func getIcon(from id: String) {
-        weatherIconManager.getIcon(for: id) { [weak dayIcon] icon, iconID in
+        weatherIconService.getIcon(for: id) { [weak dayIcon] icon, iconID in
             guard id == iconID else { return }
             dayIcon?.value = icon
         }

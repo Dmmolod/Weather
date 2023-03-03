@@ -12,12 +12,12 @@ struct HourCollectionCellViewModel: HourCollectionCellViewModelType {
     let temperature: String
     let icon = Bindable<UIImage?>(nil)
 
-    private let weatherIconManager = WeatherIconManager()
+    private let iconService = WeatherIconService()
     
     init(
         _ hourForecast: HourForecast,
         isCurrentHour: Bool = false,
-        iconManager: WeatherIconManager
+        iconService: WeatherIconService
     ) {
         time = isCurrentHour ? "Now".localized : hourForecast.date.format("HH")
         temperature = String(hourForecast.temp).withTempSymbol
@@ -26,7 +26,7 @@ struct HourCollectionCellViewModel: HourCollectionCellViewModelType {
     }
     
     private func getImage(from id: String) {
-        weatherIconManager.getIcon(for: id) { [weak icon] fetchIcon, iconID in
+        iconService.getIcon(for: id) { [weak icon] fetchIcon, iconID in
             guard id == iconID else { return }
             icon?.value = fetchIcon
         }

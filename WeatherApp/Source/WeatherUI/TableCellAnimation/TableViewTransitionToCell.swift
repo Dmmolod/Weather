@@ -9,21 +9,23 @@ import UIKit
 
 struct TableViewTransitionToCell: AnimateTransitionable {
     
+    private typealias TransitionObjects = (
+        containerView: UIView,
+        fromView: UIView,
+        fromViewContainer: UIView,
+        toView: UIView,
+        zoomingCell: UIView
+    )
+    
     let transitionDuration: CGFloat
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         fetchTransitionObjects(for: transitionContext) { result in
             switch result {
             case let .success(transitionObjects):
-                let (containerView, fromView, toView, zoomingCell) = transitionObjects
-                self.animateTransitionIntoCell(
-                    duration: transitionDuration,
-                    containerView: containerView,
-                    fromView: fromView,
-                    toView: toView,
-                    zoomingCell: zoomingCell) {
-                        transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-                    }
+                self.animateTransitionIntoCell(with: transitionObjects) {
+                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+                }
             case let .failure(failure):
                 print(failure)
                 transitionContext.completeTransition(false)
@@ -33,59 +35,48 @@ struct TableViewTransitionToCell: AnimateTransitionable {
     
     private func fetchTransitionObjects(
         for transitionContext: UIViewControllerContextTransitioning,
-        completion: @escaping (
-            Result<(containerView: UIView, fromView: UIView, toView: UIView, zoomingCell: UIView), Error>
-        ) -> ()
+        completion: @escaping (Result<TransitionObjects, Error>) -> ()
     ) {
         let containerView = transitionContext.containerView
         let fromVC = transitionContext.viewController(forKey: .from)
         let toVC = transitionContext.viewController(forKey: .to) as? TableViewCellTransitionable
         let toView = toVC?.view
+        let fromViewContainer = UIView()
         
         guard let toView else { return completion(.failure(NSError(domain: "Cannot get object: \"toView\"", code: 0))) }
         
         guard let fromView = fromVC?.view else { return completion(.failure(NSError(domain: "Cannot get object: \"fromView", code: 1))) }
         
-        /// this is important so as not to overload the table view until it has a window
         toView.isHidden = true
         containerView.addSubview(toView)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
-            guard let zoomingCell = toVC?.zoomingCell() else { return completion(.failure(NSError(domain: "Cannot get object: \"zoomingCell\"", code: 2))) }
-            return completion(.success((containerView, fromView, toView, zoomingCell)))
+            guard let zoomingCell = toVC?.zoomingCell() else {
+                completion(.failure(NSError(domain: "Cannot get object: \"zoomingCell\"", code: 2)))
+                return
+            }
+            return completion(.success((containerView, fromView, fromViewContainer, toView, zoomingCell)))
         }
     }
     
     private func animateTransitionIntoCell(
-        duration: TimeInterval,
-        containerView: UIView,
-        fromView: UIView,
-        toView: UIView,
-        zoomingCell: UIView,
+        with transitionObjects: TransitionObjects,
         completion: @escaping () -> ()
     ) {
+        let (containerView, _, fromViewContainer, _, zoomingCell) = transitionObjects
         (zoomingCell as? ZoomingAnimateLifeCycle)?.preTransitionStateWillSet(for: .pop)
+        
         let finishZoomingCellFrame = zoomingCell.frame
         let convertedZoomingCellFrame = zoomingCell.superview?.convert(
             zoomingCell.frame,
             to: containerView
         ) ?? .zero
         
-        let fromViewContainer = UIView()
+        preTransitionLayout(for: transitionObjects)
         
-        preTransitionLayout(
-            containerView: containerView,
-            zoomingCell: zoomingCell,
-            fromView: fromView,
-            toView: toView,
-            fromViewContainer: fromViewContainer
-        )
-        
-        UIView.animate(withDuration: duration, delay: 0) {
+        UIView.animate(withDuration: transitionDuration, delay: 0) {
             self.postTransitionLayout(
-                fromView: fromView,
-                zoomingCell: zoomingCell,
-                fromViewContainer: fromViewContainer,
+                for: transitionObjects,
                 convertedZoomingCellFrame: convertedZoomingCellFrame,
                 finishZoomingCellFrame: finishZoomingCellFrame
             )
@@ -97,13 +88,8 @@ struct TableViewTransitionToCell: AnimateTransitionable {
         }
     }
     
-    private func preTransitionLayout(
-        containerView: UIView,
-        zoomingCell: UIView,
-        fromView: UIView,
-        toView: UIView,
-        fromViewContainer: UIView
-    ) {
+    private func preTransitionLayout(for transitionObjects: TransitionObjects) {
+        let (containerView, fromView, fromViewContainer, toView, zoomingCell) = transitionObjects
         fromViewContainer.addSubview(fromView)
         containerView.addSubview(fromViewContainer)
         
@@ -123,12 +109,11 @@ struct TableViewTransitionToCell: AnimateTransitionable {
     }
     
     private func postTransitionLayout(
-        fromView: UIView,
-        zoomingCell: UIView,
-        fromViewContainer: UIView,
+        for transitionObjects: TransitionObjects,
         convertedZoomingCellFrame: CGRect,
         finishZoomingCellFrame: CGRect
     ) {
+        let (_, fromView, fromViewContainer, _, zoomingCell) = transitionObjects
         fromViewContainer.frame = convertedZoomingCellFrame
         fromViewContainer.alpha = 0
         

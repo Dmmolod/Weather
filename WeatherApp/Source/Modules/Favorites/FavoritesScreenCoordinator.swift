@@ -19,20 +19,20 @@ final class FavoritesScreenCoordinator: BaseCoordinator {
     }
     
     private let currentForecast: Forecast?
-    private let favoritesManager: FavoritesManagerProtocol
+    private let favoritesService: FavoritesServiceProtocol
     
     init(
         currentForecast: Forecast? = nil,
-        favoritesManager: FavoritesManagerProtocol
+        favoritesService: FavoritesServiceProtocol
     ) {
         self.currentForecast = currentForecast
-        self.favoritesManager = favoritesManager
+        self.favoritesService = favoritesService
     }
     
     override func start() {
         let viewController = FavoritesScreenFactory.makeFavoriteScreen(
             coordinator: self,
-            favoritesManager: favoritesManager,
+            favoritesService: favoritesService,
             currentLocationForecast: currentForecast
         )
         
@@ -60,7 +60,7 @@ final class FavoritesScreenCoordinator: BaseCoordinator {
         let coordinator = WeatherScreenCoordinator(
             source: self,
             loadModel: loadModl,
-            favoritesManager: favoritesManager,
+            favoritesService: favoritesService,
             isPresentationStyle: operation == .present
         )
         coordinator.start()

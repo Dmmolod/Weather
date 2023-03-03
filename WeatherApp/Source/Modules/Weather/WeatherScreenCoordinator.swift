@@ -17,16 +17,16 @@ final class WeatherScreenCoordinator: BaseCoordinator {
     
     private weak var source: BaseCoordinator?
     private let loadModel: ForecastLoadModel
-    private let favoritesManager: FavoritesManagerProtocol
+    private let favoritesService: FavoritesServiceProtocol
     private let isPresentationStyle: Bool
     
     init(
         source: BaseCoordinator,
         loadModel: ForecastLoadModel,
-        favoritesManager: FavoritesManagerProtocol,
+        favoritesService: FavoritesServiceProtocol,
         isPresentationStyle: Bool
     ) {
-        self.favoritesManager = favoritesManager
+        self.favoritesService = favoritesService
         self.source = source
         self.loadModel = loadModel
         self.isPresentationStyle = isPresentationStyle
@@ -36,7 +36,7 @@ final class WeatherScreenCoordinator: BaseCoordinator {
         let viewController = WeatherScreenFactory.makeWeatherScreen(
             with: loadModel,
             coordinator: self,
-            favoritesManager: favoritesManager,
+            favoritesService: favoritesService,
             isPresentationStyle: isPresentationStyle
         )
         

@@ -16,9 +16,9 @@ typealias WeatherViewModel = WeatherViewModelType & WeatherTableViewModel
 
 final class WeatherViewModelImpl: WeatherViewModel {
     
-    let weatherIconManager: WeatherIconManager
+    let iconService: WeatherIconService
     private let oneCallApiClient: OneCallApiClientProtocol
-    private let favoritesManager: FavoritesManagerProtocol
+    private let favoritesService: FavoritesServiceProtocol
     
     let forecastCellModels = Bindable<[WeatherTableCellModel]>([])
     let forecastCityName = Bindable<String>("- -")
@@ -43,13 +43,13 @@ final class WeatherViewModelImpl: WeatherViewModel {
     init(
         loadModel: ForecastLoadModel,
         oneCallApiClient: OneCallApiClientProtocol,
-        favoritesManager: FavoritesManagerProtocol,
-        weatherIconManager: WeatherIconManager,
+        favoritesService: FavoritesServiceProtocol,
+        iconService: WeatherIconService,
         isPresentationStyle: Bool = false
     ) {
         self.oneCallApiClient = oneCallApiClient
-        self.favoritesManager = favoritesManager
-        self.weatherIconManager = weatherIconManager
+        self.favoritesService = favoritesService
+        self.iconService = iconService
         self.loadModel = loadModel
         self.isPresentationStyle = isPresentationStyle
         
@@ -68,7 +68,7 @@ final class WeatherViewModelImpl: WeatherViewModel {
     
     func addButtonPressed() {
         guard let forecast else { return }
-        favoritesManager.save(forecast: forecast)
+        favoritesService.save(forecast: forecast)
     }
         
     //MARK: - Setup forecast methods
@@ -105,7 +105,7 @@ final class WeatherViewModelImpl: WeatherViewModel {
         forecastCurrentDegrees.value = "\(forecast.current.temp)".withTempSymbol
         
         if isPresentationStyle == true {
-            addToFavoritesButtonIsHidden.value = favoritesManager.isAlreadySaved(forecast.cityInfo.coordinate)
+            addToFavoritesButtonIsHidden.value = favoritesService.isAlreadySaved(forecast.cityInfo.coordinate)
         }
         
         guard let currentTime = Int(forecast.current.date.format("H")),
@@ -125,14 +125,14 @@ final class WeatherViewModelImpl: WeatherViewModel {
             HourCollectionCellViewModel(
                 $1,
                 isCurrentHour: $0 == 0,
-                iconManager: weatherIconManager
+                iconService: iconService
             )
         }
         let dailyCellViewModels = forecast.daily.enumerated().map {
             DailyTableCellViewModel(
                 $1,
                 isCurrentDay: $0 == 0,
-                iconManager: weatherIconManager
+                iconService: iconService
             )
         }
         

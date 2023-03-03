@@ -11,15 +11,15 @@ struct WeatherScreenFactory {
     static func makeWeatherScreen(
         with forecastLoadModel: ForecastLoadModel,
         coordinator: WeatherScreenCoordinatorLogic,
-        favoritesManager: FavoritesManagerProtocol,
+        favoritesService: FavoritesServiceProtocol,
         isPresentationStyle: Bool
     ) -> UIViewController {
         
         let viewModel = WeatherViewModelImpl(
             loadModel: forecastLoadModel,
             oneCallApiClient: OneCallApiClient(),
-            favoritesManager: favoritesManager,
-            weatherIconManager: WeatherIconManager(),
+            favoritesService: favoritesService,
+            iconService: WeatherIconService(),
             isPresentationStyle: isPresentationStyle
         )
         
