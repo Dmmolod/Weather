@@ -14,7 +14,7 @@ struct ApiClient {
     let host: String
     
     init(
-        apiKey: String? = "1916b1864fdbb31e8af1c91944e2b814",
+        apiKey: String? = YOUR DEFAULT openweathermap API_KEY,
         apiKeyQuery: String = "appid",
         host: String = "api.openweathermap.org"
     ) {
