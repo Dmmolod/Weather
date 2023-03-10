@@ -44,6 +44,11 @@
 |:-:|:-:|
 [![search][search]|![Add and Remove from favorites][addRemove]|
 
+# Как попробовать?
+- Заведите аккаунт на openweathermap, и получите ваш персональный API_KEY.
+- В файле "ApiClient" на 17 строчке присвойте в инициализаторе дефолтное значение apiKey равное вашему новому ключу.
+> Путь до файла: `WeatherApp/Source/Services/OpenWeathermapAPI/ApiClient.swift`
+
 [launchApp]: https://github.com/Dmmolod/Weather/blob/master/Gifs/launchApp.gif
 [detail]: https://github.com/Dmmolod/Weather/blob/master/Gifs/fullDetailScreen.gif
 [standartTransition]: https://github.com/Dmmolod/Weather/blob/master/Gifs/standartTransitionAnimation.gif
